@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="scit.master.planbe.dao.WbsMapper">
+
+<!-- ProjectInfo 가져오기  -->
+<select id="getProjectInfo" parameterType="int" resultType="ProjectVO">
+   SELECT * FROM PROJECT WHERE PROJECTNO = #{projectNo}
+</select>
+
+<!-- TaskList 가져오기 -->
+<select id="getTaskList" parameterType="int" resultType="TaskVO">
+   SELECT * FROM TASK WHERE PROJECTNO = #{projectNo}
+</select>
+
+<!-- MemberList 가져오기 -->
+<select id="getMemberList" parameterType="int" resultType="String">
+   SELECT USERNAME FROM USERS U, MEMBER M
+   WHERE U.USERNO = M.USERNO
+   AND PROJECTNO = #{projectNo}
+</select>
+
+
+
+</mapper>
+
+
+

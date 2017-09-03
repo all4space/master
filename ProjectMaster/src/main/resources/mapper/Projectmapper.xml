@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="scit.master.planbe.dao.ProjectMapper">
+
+<select id = "getMemberNo" parameterType="UsersVO" resultType="MemberVO">
+	SELECT memberno from member where userno=(select userno from users where userid = #{userId} and username = #{userName}) 
+</select>
+
+<select id="taskSerialize" resultType="TaskVO" parameterType="MemberVO">
+	SELECT * FROM task where memberno = #{memberNo}
+</select>
+
+</mapper>
