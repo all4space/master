@@ -13,4 +13,14 @@
 	SELECT * FROM task where memberno = #{memberNo}
 </select>
 
+<!-- 그룹네임 가져오기 -->
+<select id = "groupNameList" resultType = "UsersVO">
+	select distinct groupname from users order by groupname
+</select>
+
+<!-- 멤버 가져오기 -->
+<select id = "groupMemberList" resultType = "UsersVO" parameterType = "string">
+	select username from users where groupname = #{groupName}
+</select>
+
 </mapper>

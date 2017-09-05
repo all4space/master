@@ -54,10 +54,15 @@ public class ProjectDAOImpl implements ProjectDAO{
 	}
 
 	public ArrayList<UsersVO> groupNameList() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
+		return mapper.groupNameList();
 	}
 
+	public ArrayList<UsersVO> groupMemberList(String groupName) {
+		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
+		return mapper.groupMemberList(groupName);
+	}
 	
 
 }

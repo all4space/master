@@ -43,4 +43,14 @@ public class ProjectServiceImpl implements ProjectService{
 		dao.getProjectList(vo);
 		return null;
 	}
+
+	public ArrayList<UsersVO> groupNameList() {
+
+		return dao.groupNameList();
+	}
+
+	public ArrayList<UsersVO> groupMemberList(String groupName) {
+
+		return dao.groupMemberList(groupName);
+	}
 }

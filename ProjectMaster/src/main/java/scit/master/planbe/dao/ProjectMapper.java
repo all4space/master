@@ -23,5 +23,7 @@ public interface ProjectMapper {
 
 	public ArrayList<TaskVO> taskSerialize(MemberVO vo, String action);
 	
+	
 	public ArrayList<UsersVO> groupNameList();
+	public ArrayList<UsersVO> groupMemberList(String groupName);
 }

@@ -40,7 +40,43 @@
 	<!-- start: Favicon -->
 	<link rel="shortcut icon" href="/planbe/resources/bootstrap/img/favicon.ico">
 	<!-- end: Favicon -->
-	
+	<script>
+ 
+function myListener(obj)
+{
+ 
+ 	alert("groupMemberList function In" + obj.value);
+	$.ajax
+	({
+		url: "/planbe/project/groupMemberList",
+		type: "post",
+		data: {"groupName":obj.value},
+		dataType: "json",
+		success: function(result)
+		{
+			
+			$("#groupMemberList").empty();
+			$(result).each(function(index, item){
+			var addRow = '<option>'
+						+ item.userName
+						+ '</option>';
+						
+			$("#groupMemberList").append(addRow);
+			
+			
+			})
+			$("#groupMemberList").trigger("liszt:updated");
+			
+		},
+		error : function()
+		{
+			alert("에러뭐든");
+		}
+	})
+}
+
+ 
+</script>
 		
 		
 		
@@ -95,40 +131,79 @@
 						</div>
 					</div>
 					<div class="box-content">
-						<form class="form-horizontal">
+						<form action = "/test/project/projectAdd" method = "post" class="form-horizontal">
 						  <fieldset>
 							<div class="control-group">
-							  <label class="control-label" for="typeahead">Auto complete </label>
+							  <label class="control-label" for="typeahead">Project Name </label>
 							  <div class="controls">
-								<input type="text" class="span6 typeahead" id="typeahead"  data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
+								<input type="text" class="span6 typeahead" id="projectName" name ="projectName"  data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
+								<!-- 자동완성 데이터 넣을거 있는지. 추후 사용가능 -->
+								
 								<p class="help-block">Start typing to activate auto complete!</p>
 							  </div>
-							</div>
+							  
 							<div class="control-group">
-							  <label class="control-label" for="date01">Date input</label>
+							  <label class="control-label" for="date01">Start Date</label>
 							  <div class="controls">
-								<input type="text" class="input-xlarge datepicker" id="date01" value="02/16/12">
+								<input type="text" class="input-xlarge datepicker" id="startDate" name = "startDate" value="">
 							  </div>
-							</div>
-
+							</div> <!-- START DATE 년/월/일 설정하는법 -->
+							
 							<div class="control-group">
-							  <label class="control-label" for="fileInput">File input</label>
-							  <div class="controls">
-								<input class="input-file uniform_on" id="fileInput" type="file">
+							  <label class="control-label" for="date01">Start Date</label>
+							  <div class="controls">	
+								<input type="text" class="input-xlarge datepicker" id="dueDate" name = "dueDate" value="">
 							  </div>
-							</div>          
-							<div class="control-group hidden-phone">
-							  <label class="control-label" for="textarea2">Textarea WYSIWYG</label>
+							</div> <!-- START DATE 년/월/일 설정하는법 -->
+							
+							 <div class="control-group hidden-phone">
+							  <label class="control-label" for="textarea1">Project Content</label>
 							  <div class="controls">
-								<textarea class="cleditor" id="textarea2" rows="3"></textarea>
+								<textarea class="cleditor" id="textarea1" name = "projectContent" rows="3"></textarea>
 							  </div>
-							</div>
+							</div> <!-- 컨텐츠 - > 글꼴 설정 필요한지 -->
+							
+							<div class="control-group">
+								<label class="control-label" for="selectError3">Project State</label>
+								<div class="controls">
+								  <select id="projectState" name = "proejctStatus">
+									<option>Waiting</option>
+									<option>Progress</option>
+									<option>Terminate</option>
+								  </select>
+								</div>
+							  </div>	
+							  
+							  
+							<div class="control-group">
+								<label class="control-label" for="groupNameList">Group Select</label>
+								<div class="controls">
+<!--리스트  -->								  
+								  <select id="groupNameList" class="groupNameList" data-rel="chosen" onchange="javascript:myListener(this);">
+								  <c:forEach items="${groupNameList}" var="groupNameList" >
+									<option>${groupNameList.groupName}</option>
+								  </c:forEach>
+								  </select>
+								</div>
+							  </div>
+<!--멤버  -->						  
+							  <div class="control-group">
+								<label class="control-label">Member Select</label>
+								<div class="controls">
+								  <select  id = "groupMemberList" name = "userName" multiple data-rel="chosen"> 
+								<option> 아무것도 나오지 않아</option>
+								  </select>
+								</div>
+							  </div> 
+							  
+							  <input type = "hidden" value = "${sessionScope.userName}" name = "userName">
 							<div class="form-actions">
-							  <button type="submit" class="btn btn-primary">Save changes</button>
+							  <button type="submit" class="btn btn-primary">CONFIRM</button>
 							  <button type="reset" class="btn">Cancel</button>
 							</div>
+							
 						  </fieldset>
-						</form>   
+						</form>      
 
 					</div>
 				</div><!--/span-->
