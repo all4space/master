@@ -52,6 +52,13 @@ public ArrayList<UsersVO> groupNameList() {
 		return mapper.groupNameList();
 	}
 
+public int getUserNo(String userId) {
+		
+		UsersMapper mapper = Sqlsession.getMapper(UsersMapper.class);
+				return mapper.getUserNo(userId);
+		
+}
+
 }
 
 

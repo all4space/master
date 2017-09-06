@@ -10,4 +10,5 @@ public interface UsersDAO {
 	public UsersVO ctoCheck(UsersVO vo); // CTO 중복 체크  
 	public UsersVO login(UsersVO vo); // 로그인
 	public int delete(UsersVO vo); // 회원 탈퇴
+	public int getUserNo(String userId);
 }

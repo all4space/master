@@ -21,9 +21,10 @@ public class ProjectServiceImpl implements ProjectService{
 	UsersDAOImpl userDao;
 	
 	@Override
-	public void projectAdd(UsersVO vo) {
-		// TODO Auto-generated method stub
+	public int projectAdd(ProjectVO projectVo) {
 		
+		return dao.projectAdd(projectVo);
+		 
 	}
 
 	@Override
@@ -49,8 +50,16 @@ public class ProjectServiceImpl implements ProjectService{
 		return dao.groupNameList();
 	}
 
-	public ArrayList<UsersVO> groupMemberList(String groupName) {
+	public ArrayList<UsersVO> groupMemberList(UsersVO uvo) {
 
-		return dao.groupMemberList(groupName);
+		return dao.groupMemberList(uvo);
+	}
+
+	public ArrayList<UsersVO> groupManagerList(String groupName) {
+		return dao.groupManagerList(groupName);
+	}
+
+	public int getProjectSeq() {
+		return dao.getProjectSeq();
 	}
 }

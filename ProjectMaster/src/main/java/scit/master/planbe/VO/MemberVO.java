@@ -12,7 +12,6 @@ public class MemberVO {
 	public MemberVO(){}
 
 	public MemberVO(int memberNo, String projectAuthority, int projectNo, int userNo, int canWork, int mustWork) {
-		super();
 		this.memberNo = memberNo;
 		this.projectAuthority = projectAuthority;
 		this.projectNo = projectNo;

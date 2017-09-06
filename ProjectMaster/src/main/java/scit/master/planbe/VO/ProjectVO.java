@@ -6,20 +6,20 @@ public class ProjectVO {
 	private int userNo;
 	private String projectName;
 	private String projectContent;
-	private String proejctStatus;
+	private String projectStatus;
 	private String startDate;
 	private String dueDate;
 	
 	public ProjectVO(){}
 
-	public ProjectVO(int projectNo, int userNo, String projectName, String projectContent, String proejctStatus,
+	public ProjectVO(int projectNo, int userNo, String projectName, String projectContent, String projectStatus,
 			String startDate, String dueDate) {
 		super();
 		this.projectNo = projectNo;
 		this.userNo = userNo;
 		this.projectName = projectName;
 		this.projectContent = projectContent;
-		this.proejctStatus = proejctStatus;
+		this.projectStatus = projectStatus;
 		this.startDate = startDate;
 		this.dueDate = dueDate;
 	}
@@ -56,12 +56,12 @@ public class ProjectVO {
 		this.projectContent = projectContent;
 	}
 
-	public String getProejctStatus() {
-		return proejctStatus;
+	public String getProjectStatus() {
+		return projectStatus;
 	}
 
-	public void setProejctStatus(String proejctStatus) {
-		this.proejctStatus = proejctStatus;
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
 	}
 
 	public String getStartDate() {
@@ -83,7 +83,7 @@ public class ProjectVO {
 	@Override
 	public String toString() {
 		return "ProjectVO [projectNo=" + projectNo + ", userNo=" + userNo + ", projectName=" + projectName
-				+ ", projectContent=" + projectContent + ", proejctStatus=" + proejctStatus + ", startDate=" + startDate
+				+ ", projectContent=" + projectContent + ", projectStatus=" + projectStatus + ", startDate=" + startDate
 				+ ", dueDate=" + dueDate + "]";
 	}
 

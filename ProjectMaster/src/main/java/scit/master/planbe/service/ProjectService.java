@@ -7,7 +7,7 @@ import scit.master.planbe.VO.UsersVO;
 
 public interface ProjectService { //생성
 	
-	public void projectAdd(UsersVO vo);
+	public int projectAdd(ProjectVO projectVo);
 	public boolean projectModify(UsersVO vo);
 	public boolean projectDelete(UsersVO vo);
 	public ArrayList<ProjectVO> getProjectList(UsersVO vo);

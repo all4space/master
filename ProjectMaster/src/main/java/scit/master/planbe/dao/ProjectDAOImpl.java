@@ -18,9 +18,9 @@ public class ProjectDAOImpl implements ProjectDAO{
 	SqlSession sqlSession;
 	
 	@Override
-	public void projectAdd(UsersVO vo) {
-		// TODO Auto-generated method stub
-		
+	public int projectAdd(ProjectVO projectVo) {
+		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
+		return mapper.projectAdd(projectVo);
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class ProjectDAOImpl implements ProjectDAO{
 
 	@Override
 	public int projectDelete(UsersVO vo) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated meth	od stub
 		return 0;
 	}
 
@@ -59,10 +59,18 @@ public class ProjectDAOImpl implements ProjectDAO{
 		return mapper.groupNameList();
 	}
 
-	public ArrayList<UsersVO> groupMemberList(String groupName) {
+	public ArrayList<UsersVO> groupMemberList(UsersVO uvo) {
 		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
-		return mapper.groupMemberList(groupName);
+		return mapper.groupMemberList(uvo);
 	}
-	
 
+	public ArrayList<UsersVO> groupManagerList(String groupName) {
+		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
+		return mapper.groupManagerList(groupName);
+	}
+
+	public int getProjectSeq() {
+		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
+		return mapper.getProjectSeq();
+	}
 }

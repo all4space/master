@@ -13,4 +13,5 @@ public interface UsersMapper {
 	public UsersVO login(UsersVO vo); // 濡쒓렇�씤
 	public int delete(UsersVO vo); // �쉶�썝 �깉�눜 
 	public ArrayList<UsersVO> groupNameList();
+	public int getUserNo(String userId);
 }

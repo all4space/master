@@ -5,7 +5,32 @@
 
 <mapper namespace="scit.master.planbe.dao.MemberMapper">
 
+<!-- Manager insert -->
+<insert id = "ManagerAdd" parameterType="MemberVO">
 
+	insert into member values
+	(
+		member_seq.nextval,
+		'Manager',
+		#{projectNo},
+		#{userNo},
+		#{canWork},
+		#{mustWork}
+	)
+</insert>
+
+<insert id = "MemberAdd" parameterType="MemberVO">
+
+	insert into member values
+	(
+		member_seq.nextval,
+		'Member',
+		#{projectNo},
+		#{userNo},
+		#{canWork},
+		#{mustWork}
+	)
+</insert>
 
 
 </mapper>

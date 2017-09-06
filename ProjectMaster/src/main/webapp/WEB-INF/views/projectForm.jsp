@@ -41,24 +41,64 @@
 	<link rel="shortcut icon" href="/planbe/resources/bootstrap/img/favicon.ico">
 	<!-- end: Favicon -->
 	<script>
+	
+
+	function groupSelect(obj) //그룹이름에 따른 멤버 리스트 select ver
+	{
  
-function myListener(obj)
-{
- 
- 	alert("groupMemberList function In" + obj.value);
+	//그룹 매니저 리스트
+	alert("groupManagerList function In" + obj.value);
 	$.ajax
 	({
-		url: "/planbe/project/groupMemberList",
+		url: "/planbe/project/groupManagerList",
 		type: "post",
 		data: {"groupName":obj.value},
 		dataType: "json",
 		success: function(result)
 		{
 			
+			$("#groupManagerList").empty();
+			var addRow = '<option>Manager Select</option>';
+			
+			$(result).each(function(index, item){
+			addRow += '<option>'
+						+ item.userId
+						+ '</option>';
+						
+			
+			
+			})
+			$("#groupManagerList").append(addRow);
+			$("#groupManagerList").trigger("liszt:updated");
+			
+		},
+		error : function()
+		{
+			alert("에러뭐든");
+		}
+	})
+}
+
+//그룹 멤버리스트
+function managerSelect(manager) //그룹이름에 따른 멤버 리스트 select ver
+{
+	alert("groupMemberList function In" + manager.value);
+	alert()
+	
+	$.ajax
+	({
+		url: "/planbe/project/groupMemberList",
+		type: "post",
+		data: {"groupName":document.getElementById("groupNameList").value, "userId":manager.value},
+		dataType: "json",
+		success: function(result)
+		{
+			
 			$("#groupMemberList").empty();
+			
 			$(result).each(function(index, item){
 			var addRow = '<option>'
-						+ item.userName
+						+ item.userId
 						+ '</option>';
 						
 			$("#groupMemberList").append(addRow);
@@ -70,15 +110,13 @@ function myListener(obj)
 		},
 		error : function()
 		{
-			alert("에러뭐든");
-		}
-	})
+		alert("에러뭐든");
+	}
+})
 }
 
  
 </script>
-		
-		
 		
 </head>
 
@@ -96,7 +134,6 @@ function myListener(obj)
 	<div>
      <%@include file="sideMenu.jsp"%>
     </div>		
-				
 			<noscript>
 				<div class="alert alert-block span10">
 					<h4 class="alert-heading">Warning!</h4>
@@ -131,7 +168,7 @@ function myListener(obj)
 						</div>
 					</div>
 					<div class="box-content">
-						<form action = "/test/project/projectAdd" method = "post" class="form-horizontal">
+						<form action = "/planbe/project/projectAdd" method = "post" class="form-horizontal">
 						  <fieldset>
 							<div class="control-group">
 							  <label class="control-label" for="typeahead">Project Name </label>
@@ -141,7 +178,7 @@ function myListener(obj)
 								
 								<p class="help-block">Start typing to activate auto complete!</p>
 							  </div>
-							  
+						  </div>
 							<div class="control-group">
 							  <label class="control-label" for="date01">Start Date</label>
 							  <div class="controls">
@@ -166,7 +203,7 @@ function myListener(obj)
 							<div class="control-group">
 								<label class="control-label" for="selectError3">Project State</label>
 								<div class="controls">
-								  <select id="projectState" name = "proejctStatus">
+								  <select id="projectState" name = "projectStatus">
 									<option>Waiting</option>
 									<option>Progress</option>
 									<option>Terminate</option>
@@ -179,24 +216,34 @@ function myListener(obj)
 								<label class="control-label" for="groupNameList">Group Select</label>
 								<div class="controls">
 <!--리스트  -->								  
-								  <select id="groupNameList" class="groupNameList" data-rel="chosen" onchange="javascript:myListener(this);">
+								  <select id="groupNameList" name = "groupName" class="groupNameList" data-rel="chosen" onchange="javascript:groupSelect(this);">
 								  <c:forEach items="${groupNameList}" var="groupNameList" >
 									<option>${groupNameList.groupName}</option>
 								  </c:forEach>
 								  </select>
 								</div>
 							  </div>
-<!--멤버  -->						  
+							  
 							  <div class="control-group">
-								<label class="control-label">Member Select</label>
+								<label class="control-label">Manager Select</label>
 								<div class="controls">
-								  <select  id = "groupMemberList" name = "userName" multiple data-rel="chosen"> 
-								<option> 아무것도 나오지 않아</option>
+<!--리스트  -->								  
+								  <select id="groupManagerList" name = "managerId" data-rel="chosen" onchange="javascrpipt:managerSelect(this)">
+								  	<option>Manager Select</option>
 								  </select>
 								</div>
-							  </div> 
+							  </div>
 							  
-							  <input type = "hidden" value = "${sessionScope.userName}" name = "userName">
+							   <div class="control-group">
+								<label class="control-label">Member Select</label>
+								<div class="controls">
+<!--리스트  -->								  
+								  <select id="groupMemberList" name = "memberList" multiple data-rel="chosen">
+								  </select>
+								</div>
+							  </div>
+<!--멤버  -->						  
+						  
 							<div class="form-actions">
 							  <button type="submit" class="btn btn-primary">CONFIRM</button>
 							  <button type="reset" class="btn">Cancel</button>

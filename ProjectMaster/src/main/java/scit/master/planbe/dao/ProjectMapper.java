@@ -9,7 +9,7 @@ import scit.master.planbe.VO.UsersVO;
 
 public interface ProjectMapper {
 	
-	public void projectAdd(UsersVO vo);
+	public int projectAdd(ProjectVO projectVo);
 	public int projectModify(UsersVO vo);
 	public int projectDelete(UsersVO vo);
 	public ArrayList<ProjectVO> getProjectList(UsersVO vo);
@@ -25,5 +25,7 @@ public interface ProjectMapper {
 	
 	
 	public ArrayList<UsersVO> groupNameList();
-	public ArrayList<UsersVO> groupMemberList(String groupName);
+	public ArrayList<UsersVO> groupMemberList(UsersVO uvo);
+	public ArrayList<UsersVO> groupManagerList(String groupName);
+	public int getProjectSeq();
 }

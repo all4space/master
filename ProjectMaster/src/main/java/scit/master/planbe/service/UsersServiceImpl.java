@@ -63,6 +63,12 @@ public class UsersServiceImpl implements UsersService{
 		return dao.groupNameList();
 	}
 
+	public int getUserNo(String userId) {
+		
+		return dao.getUserNo(userId);
+		
+	}
+
 	
 }
 

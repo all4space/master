@@ -8,7 +8,7 @@ import scit.master.planbe.VO.TaskVO;
 import scit.master.planbe.VO.UsersVO;
 
 public interface ProjectDAO {
-	public void projectAdd(UsersVO vo);
+	public int projectAdd(ProjectVO projectVo);
 	public int projectModify(UsersVO vo);
 	public int projectDelete(UsersVO vo);
 	public ArrayList<ProjectVO> getProjectList(UsersVO vo);
@@ -19,4 +19,7 @@ public interface ProjectDAO {
 	 **			서비스는 하나에서 일,주,달로 쪼개어 리턴함. 명령값(action) 받을거임
 	 */
 	public ArrayList<TaskVO> taskSerialize(MemberVO vo);
+	
+	
+	
 }
