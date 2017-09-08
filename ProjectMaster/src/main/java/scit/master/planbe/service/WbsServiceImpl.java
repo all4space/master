@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import scit.master.planbe.VO.MemberVO;
 import scit.master.planbe.VO.ProjectVO;
 import scit.master.planbe.VO.TaskVO;
 import scit.master.planbe.dao.WbsDAOImpl;
@@ -17,19 +16,18 @@ public class WbsServiceImpl implements WbsService {
 	WbsDAOImpl dao;
 
 	@Override
+	public ProjectVO getProjectInfo(int projectNo) {
+		return dao.getProjectInfo(projectNo);
+	}
+
+	@Override
 	public ArrayList<TaskVO> getTaskList(int projectNo) {
 		return dao.getTaskList(projectNo);
 	}
 
 	@Override
-	public ArrayList<TaskVO> getTaskListByKey(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ProjectVO getProjectInfo(int projectNo) {
-		return dao.getProjectInfo(projectNo);
+	public TaskVO getTaskInfo(TaskVO vo) {
+		return dao.getTaskInfo(vo);
 	}
 
 	@Override
@@ -37,6 +35,14 @@ public class WbsServiceImpl implements WbsService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public ArrayList<TaskVO> getTaskListByKey(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 	@Override
 	public ArrayList<String> getMemberList(int projectNo) {
@@ -63,8 +69,9 @@ public class WbsServiceImpl implements WbsService {
        return taskList;        		   
 	}
 
+}
+
 	
 
 
 
-}

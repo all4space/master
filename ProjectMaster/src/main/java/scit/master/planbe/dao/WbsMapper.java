@@ -18,7 +18,7 @@ public interface WbsMapper {
 	public ProjectVO getProjectInfo(int projectNo); 
 	
 	// Task 정보 가져오기 : 하나의 Task의 정보를 가져오는 메소드. 
-	public TaskVO getTaskInfo(int taskNo);
+	public TaskVO getTaskInfo(TaskVO vo);
 
 	// KeyList 가져오기 : 키워드 리스트를 가져오는 메소드. 
 	public ArrayList<String> getKeyList(String key);

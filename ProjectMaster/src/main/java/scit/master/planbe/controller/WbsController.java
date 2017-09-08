@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +46,19 @@ public class WbsController {
 	    return map;
 	}
 	    
+	// TaskInfo 불러오기 : TaskController 로 넘길 예정/ Test용 
+	@RequestMapping(value = "getTaskInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public TaskVO getTaskInfo(TaskVO vo) {
+		System.out.println("프넘" + vo.getProjectNo());
+		System.out.println("업무" + vo.getTaskName());
+	//	System.out.println("VO" + vo.toString());
+		TaskVO t_info = service.getTaskInfo(vo);
+	    
+		System.out.println(t_info.toString());
+		return t_info;
+	}	
+		
 	// memberList 불러오기 
 	@RequestMapping(value = "getMemberList", method = RequestMethod.POST)
 	@ResponseBody
@@ -62,5 +76,6 @@ public class WbsController {
 		ArrayList<TaskVO> list = service.doneList(projectNo, key);
 		return list;
 		
-	}	
+	}
+	
 }

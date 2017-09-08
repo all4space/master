@@ -36,7 +36,7 @@ public class WbsDAOImpl implements WbsDAO {
 
 	@Override
 	public TaskVO getTaskInfo(int taskNo) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -44,6 +44,12 @@ public class WbsDAOImpl implements WbsDAO {
 	public ArrayList<String> getMemberList(int projectNo) {
 		WbsMapper mapper = Sqlsession.getMapper(WbsMapper.class);
 		return mapper.getMemberList(projectNo);
+	}
+
+	@Override
+	public TaskVO getTaskInfo(TaskVO vo) {
+		WbsMapper mapper = Sqlsession.getMapper(WbsMapper.class);
+		return mapper.getTaskInfo(vo);
 	}
 
 /*

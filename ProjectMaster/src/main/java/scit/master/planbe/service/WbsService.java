@@ -21,6 +21,9 @@ public interface WbsService {
 	// Task 정보 가져오기 : 하나의 Task의 정보를 가져오는 메소드. 
 	public TaskVO getTaskInfo(int taskNo); 
 	
+	// Task 정보 가져오기 : 하나의 Task의 정보를 가져오는 메소드. 
+	public TaskVO getTaskInfo(TaskVO vo); 
+	
 	// MemberList 가져오기 : 동일한 프로젝트에 속한 Member들을 전부 가져오는 메소드. 
 	public ArrayList<String> getMemberList(int projectNo);
 	

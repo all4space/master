@@ -35,8 +35,6 @@
 	<!-- start: Favicon -->
 	<link rel="shortcut icon" href="/planbe/resources/bootstrap/img/favicon.ico">
 	<!-- end: Favicon -->
-	
-		
 		
 <script src="/planbe/resources/js/jquery-3.2.1.min.js"></script>	
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>		
@@ -44,112 +42,181 @@
 
 <script>
 
-// WBS
+/* WBS 트리 생성 */
 
 google.charts.load('current', {packages:['wordtree']});
 google.charts.setOnLoadCallback(drawSimpleNodeChart);
 
-
+ var wordtree; /// 
+ var nodeListData;
+ var taskList;
+ 
 function drawSimpleNodeChart(p_name, t_list) {
-  
-
-	function Data(id, child, parent, size, style){
-	      this.id = id;
-	      this.child = child;
-	      this.parent = parent;
-	      this.size = size;
-	      this.style = style;
-	      
-	      this.getId = function() {
-			  return this.id;
-		  }
-	      
-	      this.getChild = function() {
-			  return this.child;
-		  }
-	      
-	      this.getParent = function() {
-			  return this.parent;
-		  }
-	      
-	      this.getSize = function() {
-			  return this.size;
-		  }
-	      
-	      this.getStyle = function() {
-			  return this.style;
-		  }
-	      
-	      this.toString = function(){
-	    	  return this.id + "," + this.child + "," + this.parent + "," + this.size + "," + this.style;
-	      }
-	}  
-
-/* 	
-// 객체 생성 	  
-    var nodeData = [];
-	  $(t_list).each(function(index, item) {
-           nodeData.push(new Data(item.taskNo, item.taskName, 0, 1, 'black'));
-	  });// for each 
+    
+	taskList = t_list; 
 	
-    	   
-	var row = "";  
-    for(var i = 0; i < nodeData.length; i++){
-    
-       row += "[" + nodeData[i].getId() + "," + nodeData[i].getChild() + "," + nodeData[i].getParent() + "," + nodeData[i].getSize() + "," + nodeData[i].getStyle() + "],";
-       if(i == nodeData.length-1){
-       row += "[" + nodeData[i].getId() + "," + nodeData[i].getChild() + "," + nodeData[i].getParent() + "," + nodeData[i].getSize() + "," + nodeData[i].getStyle() + "]";
-       }   
-    }// for
-	  */
-	  
-    
-    
-	var nodeListData = new google.visualization.arrayToDataTable([
+	nodeListData = new google.visualization.arrayToDataTable([
     ['id', 'childLabel', 'parent', 'size', { role: 'style' }],
-    [0, p_name, -1, 1, 'black']
-    /* 
-    [index, item.taskName, 0, 1, 'black'],
-    [index, item.taskName, 0, 1, 'black'],
-    [index, item.taskName, 0, 1, 'black'],
-    [index, item.taskName, 0, 1, 'black'],
-    [index, item.taskName, 0, 1, 'black'],
-    [index, item.taskName, 0, 1, 'black']
-     */
-    /* 
-    [5, 'Euryarchaeota', 1, 1, 'black'],
-    [6, 'Korarchaeota', 1, 1, 'black'],
-    [7, 'Nanoarchaeota', 1, 1, 'black'],
-    [8, 'Thaumarchaeota', 1, 1, 'black'] */
-/*
-    [9, 'Amoebae', 2, 1, 'black'],
-    [10, 'Plants', 2, 1, 'black'],
-    [11, 'Chromalveolata', 2, 1, 'black'],
-    [12, 'Opisthokonta', 2, 5, 'black'],
-    [13, 'Rhizaria', 2, 1, 'black'],
-    [14, 'Excavata', 2, 1, 'black']
-     */
+
+/* [1] Project 이름 : 최상위 parent 노드 */    
+    
+    [0, p_name, -1, 1, '#119455']
+    
     ]);
-    	
+	
+/* [2] Task 이름 : 1단계 child 노드  */
+	
+
     $(t_list).each(function(index, item) {  
-    nodeListData.addRow([index+1, item.taskName, 0, 1, 'black']);
+    	nodeListData.addRow([index+1, item.taskName, 0, 1, '#3c43a7']);
     });// for each 
 
-    var options = {
-    colors: ['black', 'black', 'black'],
-    wordtree: {
-      format: 'explicit',
-      type: 'suffix'
-    }
-  };
 
-  var wordtree = new google.visualization.WordTree(document.getElementById('wordtree_explicit'));
-  wordtree.draw(nodeListData, options);
+/* [3] Task 키워드 : 2단계 child 노드 */    
+
+	var x = t_list.length; // 10
+    var keyword = ['Content', 'Priority', 'Status', 'Start Date', 'Due Date', 'Total Time', 'Done Time'];
+	var y = keyword.length; // 7
+    /* 3단계 child 노드의 parent id를 담을 배열 선언 */
+	var xx = [];
+    /* 3단계 child 노드의 id 선언 및 초기화 */
+    var j = x+(x*y); // 80 
+     
+    var init = x;
+    
+    $(t_list).each(function(index, item) {  
+          var z = 0;
+          for(var i = init+1; i < init+y+1; i++){
+	   		     nodeListData.addRow([i, keyword[z], index+1, 1, '#b082f9']);
+	   		     xx.push(i);
+	             z += 1;
+	      }
+	   	  init += y;
+     });// for each
+          
+	// alert(JSON.stringify(xx));
+     
+	
+/* [4] Task 키워드의 각 컨텐츠 : 3단계 child 노드 */         
+
+    /* 3단계 child 노드의 value를 담을 배열 선언 */
+    var array = [];
+    var due = [];
+
+    $(t_list).each(function(index, item) {  
+         array.push(item.taskContent);
+         array.push(item.taskPriority);
+         array.push(item.taskStatus);
+         array.push(item.startDate);
+         array.push(item.dueDate);
+         due.push(item.dueDate.substr(0, 10));
+         array.push(item.totalTime.toString());
+         array.push(item.doneTime.toString());
+         
+    });// for each
+    
+    
+/* sysdate : 보류 */    
+   
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    } 
+
+    if(mm<10) {
+        mm = '0'+mm
+    } 
+
+    today = yyyy + '-' + mm + '-' + dd;
+    
+    
+  	for(var i = 0, q = j+1; i < array.length; i++, q++){
+  		 nodeListData.addRow([q, array[i], xx[i], 1, '#a4b83c']);
+	  	   /* 우선순위가 HIGH인 노드의 color는 red로 변경한다 */
+  		   if(nodeListData.getValue(q, 1) == 'HIGH'){
+	  	     	nodeListData.setValue(q, 4, 'red');
+	  	   }
+  	}
+  	
+         
+    var options = {
+	    colors: ['black', 'black', 'black'],
+	    wordtree: {
+	      format: 'explicit',
+	      type: 'suffix'
+	    }
+    };
+    
+  
+  wordtree = new google.visualization.WordTree(document.getElementById('wordtree_explicit'));
+  wordtree.draw(nodeListData, options);  // draw 
+  
+  // google.visualization.events.addListener(wordtree, 'ready', onReady);  // ready 
+   
+/*   function onReady() {
+	    google.visualization.events.addListener(wordtree.getDataTable(), 'onmouseover', usefulHandler);
+   }
+*/
+/*    function usefulHandler() {
+	    alert("Mouseover event!");
+   }
+*/
+   
+   google.visualization.events.addListener(wordtree, 'select', getWbsInfo); // addListener
+   
+} //drawSimpleNodeChart
+ 
+/* 로직 개선중 */ 
+function getWbsInfo() {
+    var selectedNode = wordtree.getSelection();
+    var item = selectedNode.word;
+    var t_no = "";
+        alert('The word selected was: ' + item);
+        for(var i=0; i<taskList.length; i++){
+            if(taskList[i].taskName == item){
+            	 t_no = taskList[i].taskNo;
+            }	
+        }
+     alert(t_no);   
+    // getTaskInfo(item);
+    getTaskInfo(t_no);
 }
     	
-    
+/* TaskInfo 가져오기 */
+function getTaskInfo(t_no){
+	// alert(item);
+	$.ajax({
+  		url: "/planbe/wbs/getTaskInfo",
+  		type: "post",
+  		data: {"TaskNo": t_no, "projectNo" : $("#projectNo").val()},
+  		datatype: "json",
+  		success: function(result) {
+            alert("success다 !!!");	
+            $(".T_INFO").empty();
+            $(".T_INFO").append("<tr><td>" + result.taskName + "</td><td>" + result.taskContent + "</td><td>" + result.taskPriority + "</td></tr>");
+           
+		}, // succes
+    });
+}       
+	
+  
+  
+/* TEST */  
+ // alert(nodeListData.getColumnLabel(0)); // id 
+ // alert(nodeListData.getColumnProperties(0));   // [object, Object]
+ // alert(nodeListData.getProperties(0, 0));      // [object, Object] 
+ // alert(nodeListData.getRowProperties(0));      //  
+ // alert(nodeListData.getValue(0, 0));           // 0
+ // alert(nodeListData.getNumberOfColumns());     // 5 
+  
+
 
 /* WBS 데이터 불러오기 */	
+	
 	function sendNo(){
 		$.ajax({
 		  		url: "/planbe/wbs/getWbs",
@@ -163,35 +230,22 @@ function drawSimpleNodeChart(p_name, t_list) {
                     var t_list = result.taskList; 	
 		  			
                     drawSimpleNodeChart(p_name, t_list);
-                    drawChart(t_list);
-
 				}, // succes
-		  			
-              /*  origin  
-              function(result) {
-		  		    
-		  			var p_name2 = result.projectName;
-		  			alert(p_name2);
-		  			$("#p_name").append("<tr><td><button class='btn btn-large btn-primary'>" + p_name2 + "</button></td></tr>"); 
-		  			
-		  			var t_list = result.taskList; 
-						  
-		  			var totalSpace = 1000-(t_list.length*100); 
-				    var subSpace = (totalSpace/t_list.length)*0.5;
-				    
-				    $(t_list).each(function(index, item) {
-						  $("#t_name").append("<td><div style='margin-right:" + subSpace + "px; margin-left:" + subSpace + "px;'><button class='btn btn-large'>" + item.taskName + "</button><div></td>");
-						  
-					})
-				}, 
-				*/
-		  		
-		  		error: function() {
-					alert("선택해 주세요...");
-				}
-		})
+		});
 	}
-					
+
+/* WBS 수정 : taskList 페이지로 이동 */	
+	function updateWbs(){
+		location.href="/planbe/task/taskForm?projectNo=" + $("#projectNo").val();
+	}
+	
+/* Gantt : gantt 페이지로 이동 */	
+	function showGantt(){
+		location.href="/planbe/gantt/ganttForm?projectNo=" + $("#projectNo").val();
+	}
+
+	
+/*========================================================================================================================================= 보류 */	
 
 /* DONE 키워드를 클릭하면 option 붙이기=== 이건 아닌거 같아... 구글 차트를 쓰자... */	
     function done() {
@@ -239,11 +293,11 @@ function drawSimpleNodeChart(p_name, t_list) {
 			}
 	   })
     }
-	  		
+/*======================================================================================================================== 보류   */	  
+    
 </script>
 
 <body>
-
 
 <!-- Head Menu -->
 	<div>
@@ -318,76 +372,98 @@ function drawSimpleNodeChart(p_name, t_list) {
 			</div><!--키워드 드롭다운 박스 -->	
 								
 								
-													  
-												
-												
-												
-												
-												
-						
-										  
-					
-								
-			
-	        <!-- WBS 트리 박스  -->
 				
-			<!-- Project List 페이지에서 하나의 프로젝트를 클릭하면, 해당 프로젝트의 projectNo을 넘기는 구조 -->
-            
-<!-- gantt -->            
-            <div id="chart_div"></div>
-            
+<!-- Project List 페이지에서 하나의 프로젝트를 클릭하면, 해당 프로젝트의 projectNo을 넘기는 구조 -->
             
 <!-- projectNo을 넘기기 위한 임시 form -->
+            
 			   <form>
 			     <input type="text" name="projectNo" id="projectNo">
 			     <input type="button" value="데이터 불러오기" onclick="sendNo()"> 
 			   </form>
-			
- <div id="wordtree_explicit" style="width: 900px; height: 500px;"></div>			
 			   
+<!-- start: WBS 트리 박스 -->			   
 			<div class="row-fluid">	
 	             <div class="box span12">
 							<div class="box-header" />
-									 <h2><i class="halflings-icon white list"></i><span class="break"></span>WBS</h2>
-									 <div class="box-icon">
-										<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
-										<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-										<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
-									 </div>
+								  <h2><i class="halflings-icon white list"></i><span class="break"></span>WBS</h2>
+								  <div class="box-icon">
+									<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
+									<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
+									<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+								  </div>
 							</div>
-							
-							<div class="box-content" />
-	                               <!-- 1ST // 프로젝트 이름 -->
-								    <div style="width: 1000px; height: 50px; margin-right: 450px; margin-left: 450px;">
-								            <table id="p_name">
-								            </table>
-								    </div>
-								    
-								   <!--  2ND // 선 그리기 -->
-								    <div style="width: 1000px; height: 50px; ">
-								    </div>
-								    
-								    <!-- 3RD // 업무 이름  -->
-									<div id="t_div" style="width: 1000px; height: 50px;">
-									    <table>
-									      <tr id="t_name"></tr> 
-									    </table>
-									</div>
-									
-									<!-- 4TH // 선 그리기 -->
-								    <div style="width: 1000px; height: 50px; ">
-								    </div>
-								    
-								    <!-- 5TH // 세부 업무 이름 -->
-								    <div style="width: 1000px; height: 50px; ">
-								    </div>
+	                        <div class="box-content" />
+                                  
+                                  <div id="wordtree_explicit" style="width: 900px; height: 500px;"></div>	
+                                    <button class="btn btn-small btn-primary" onclick="selectHandler()">getWbsInfo</button>
+									<button class="btn btn-small btn-danger" onclick="deleteWbs()">Delete WBS</button>
+									<button class="btn btn-small btn-warning" onclick="showGantt()">Show Gantt</button>
 							</div>
 			      </div>
-			  </div><!-- WBS 트리 박스 -->
-							    
-							    
-							        
-			  <!-- 노드 정보 박스 -->				    
+							<div>
+						<!-- 	     <input type=button value="changeForm" onclick="changeFormat()"> -->
+							</div>
+			  </div>
+<!-- end: WBS 트리 박스 -->
+	
+<!-- start: WBS 노드 정보 박스 -->	
+		<div class="row-fluid sortable">		
+				<div class="box span12">
+					<div class="box-header" data-original-title>
+						<h2><i class="halflings-icon white user"></i><span class="break"></span>Task Info</h2>
+						<div class="box-icon">
+							<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
+							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
+							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+						</div>
+					</div>
+					<div class="box-content">
+						<table class="table table-striped table-bordered bootstrap-datatable datatable">
+						  <thead>
+							  <tr>
+								  <th>Username</th>
+								  <th>Date registered</th>
+								  <th>Role</th>
+								  <th>Status</th>
+								  <th>Actions</th>
+							  </tr>
+						  </thead>   
+						  <tbody class="T_INFO">
+							<tr>
+								<td>Dennis Ji</td>
+								<td class="center">2012/01/01</td>
+								<td class="center">Member</td>
+								<td class="center">
+									<span class="label label-success">Active</span>
+								</td>
+								<td class="center">
+									<a class="btn btn-success" href="#">
+										<i class="halflings-icon white zoom-in"></i>  
+									</a>
+									<a class="btn btn-info" href="#">
+										<i class="halflings-icon white edit"></i>  
+									</a>
+									<a class="btn btn-danger" href="#">
+										<i class="halflings-icon white trash"></i> 
+									</a>
+								</td>
+							</tr>
+			
+						  </tbody>
+					  </table>            
+					</div>
+				</div><!--/span-->
+			
+			</div><!--/row-->
+<!-- end: WBS 노드 정보 박스 -->		
+	
+	
+	
+	
+							
+							
+<!-- WBS 노드 정보 박스 : 후보  -->				    
 			  <div class="row-fluid">
 				
 				<div class="box span12">
@@ -431,126 +507,7 @@ function drawSimpleNodeChart(p_name, t_list) {
 			
 			</div><!--/row-->			
 							
-							
-							
-								
-							
-				
-
-			
-		<!-- 	 
-			<div class="row-fluid">	
-				<div class="box blue span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white white hand-top"></i><span class="break"></span>Quick Buttons</h2>
-					</div>
-					<div class="box-content">
-						
-						<a class="quick-button span2">
-							<i class="icon-group"></i>
-							<p>Users</p>
-							<span class="notification blue">1.367</span>
-						</a>
-						<a class="quick-button span2">
-							<i class="icon-comments-alt"></i>
-							<p>Comments</p>
-							<span class="notification green">167</span>
-						</a>
-						<a class="quick-button span2">
-							<i class="icon-shopping-cart"></i>
-							<p>Orders</p>
-						</a>
-						<a class="quick-button span2">
-							<i class="icon-barcode"></i>
-							<p>Products</p>
-						</a>
-						<a class="quick-button span2">
-							<i class="icon-envelope"></i>
-							<p>Messages</p>
-						</a>
-						<a class="quick-button span2">
-							<i class="icon-calendar"></i>
-							<p>Calendar</p>
-							<span class="notification red">68</span>
-						</a>
-						<div class="clearfix"></div>
-					</div>	
-				</div>/span
-				
-			</div>/row
-			 -->
-			
-		<!-- 	
-			<div class="row-fluid">	
-				<div class="box span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white white hand-top"></i><span class="break"></span>Small Quick Buttons</h2>
-					</div>
-					<div class="box-content">
-						
-						<a class="quick-button-small span1">
-							<i class="icon-group"></i>
-							<p>Users</p>
-							<span class="notification blue">7</span>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-comments-alt"></i>
-							<p>Comments</p>
-							<span class="notification green">4</span>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-shopping-cart"></i>
-							<p>Orders</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-barcode"></i>
-							<p>Products</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-envelope"></i>
-							<p>Messages</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-calendar"></i>
-							<p>Calendar</p>
-							<span class="notification red">8</span>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-beaker"></i>
-							<p>Projects</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-thumbs-up"></i>
-							<p>Likes</p>
-							<span class="notification green">1</span>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-heart-empty"></i>
-							<p>Favorites</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-bullhorn"></i>
-							<p>Notifications</p>
-							<span class="notification yellow">7</span>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-cogs"></i>
-							<p>Settings</p>
-						</a>
-						<a class="quick-button-small span1">
-							<i class="icon-dashboard"></i>
-							<p>Dashboard</p>
-						</a>
-						
-						<div class="clearfix"></div>
-					</div>	
-				</div>/span
-				
-			</div>/row
-		
-			
-				 -->
-					
+<!-- 필요한 버튼 쓰려고 남겨둠 -->					
 				<div class="box span6">
 					<div class="box-header">
 						<h2><i class="halflings-icon white list"></i><span class="break"></span>Buttons</h2>
@@ -624,9 +581,6 @@ function drawSimpleNodeChart(p_name, t_list) {
 				
 			</div><!--/row-->
 			
-			
-			
-			
 
 	</div><!--/.fluid-container-->
 	
@@ -659,10 +613,11 @@ function drawSimpleNodeChart(p_name, t_list) {
 
 	</footer>
 	
+	
 <!-- start: JavaScript-->
 
 		<script src="/planbe/resources/bootstrap/js/jquery-1.9.1.min.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery-migrate-1.0.0.min.js"></script>
+	    <script src="/planbe/resources/bootstrap/js/jquery-migrate-1.0.0.min.js"></script>
 	
 		<script src="/planbe/resources/bootstrap/js/jquery-ui-1.10.0.custom.min.js"></script>
 	
@@ -679,11 +634,11 @@ function drawSimpleNodeChart(p_name, t_list) {
 		<script src='/planbe/resources/bootstrap/js/jquery.dataTables.min.js'></script>
 
 		<script src="/planbe/resources/bootstrap/js/excanvas.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.pie.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.stack.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.resize.min.js"></script>
-	
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.js"></script>
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.pie.js"></script>
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.stack.js"></script>
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.resize.min.js"></script>
+		
 		<script src="/planbe/resources/bootstrap/js/jquery.chosen.min.js"></script>
 	
 		<script src="/planbe/resources/bootstrap/js/jquery.uniform.min.js"></script>
@@ -715,7 +670,7 @@ function drawSimpleNodeChart(p_name, t_list) {
 		<script src="/planbe/resources/bootstrap/js/retina.js"></script>
 
 		<script src="/planbe/resources/bootstrap/js/custom.js"></script>
-	<!-- end: JavaScript-->
+<!-- end: JavaScript-->
 	
 </body>
 </html>

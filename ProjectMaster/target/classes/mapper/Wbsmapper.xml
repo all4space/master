@@ -15,6 +15,11 @@
    SELECT * FROM TASK WHERE PROJECTNO = #{projectNo}
 </select>
 
+<!-- Task 가져오기 -->
+<select id="getTaskInfo" parameterType="TaskVO" resultType="TaskVO">
+   SELECT * FROM TASK WHERE PROJECTNO = #{projectNo} and TASKNAME= #{taskName}
+</select>
+
 <!-- MemberList 가져오기 -->
 <select id="getMemberList" parameterType="int" resultType="String">
    SELECT USERNAME FROM USERS U, MEMBER M
