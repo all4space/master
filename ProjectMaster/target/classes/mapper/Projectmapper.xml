@@ -50,4 +50,9 @@
 	)
 </insert>
 
+<!-- 프로젝트 가져오기 (1개)  -->
+<select id = "getProject" parameterType="int" resultType="ProjectVO">
+	SELECT projectno, userno, projectname, projectcontent, projectstatus, to_char(startdate,'yyyy,mm,dd')as startDate,
+	to_char(duedate,'yyyy,mm,dd')as dueDate FROM PROJECT WHERE projectNo = #{projectNo}
+</select>
 </mapper>

@@ -43,17 +43,19 @@
 	
 		
 		
-<script src="/planbe/resources/js/jquery-3.2.1.min.js"></script>	
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>		
+<script type = "text/javascript" src="/planbe/resources/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>	
 </head>
-
+<style type="text/css"> #chart_div { overflow-y: scroll; height: 500px; } </style> 
 <script>
 
-google.charts.load('current', {'packages':['gantt']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart(t_list) {
-
+	$(function(){
+		Gantt();
+		google.charts.load('current', {'packages':['gantt']});
+		google.charts.setOnLoadCallback(drawChart);
+	})
+	
+function drawChart(GanttList, date) {
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Task ID');
   data.addColumn('string', 'Task Name');
@@ -63,22 +65,23 @@ function drawChart(t_list) {
   data.addColumn('number', 'Duration');
   data.addColumn('number', 'Percent Complete');
   data.addColumn('string', 'Dependencies');
-  
-  var result =[]; 
-  
-  $(t_list).each(function(index, item) {  
-	
-	a = ['dd'+index, item.taskName, item.taskpriority, new Date(2014, 2, 22), new Date(2014, 5, 20), null, index*10, null];
-	data.addRow(a);
-  });// for each 
-	    
-  	
-  //   var a = ['2014Spring', 'Spring 2014', 'spring', new Date(2014, 2, 22), new Date(2014, 5, 20), null, 100, null]
  
-
-
+  var listSize = null;
+  
+  $(GanttList).each(function(index, item) {
+	var per = (item.doneTime / item.totalTime) * 100;
+		if(date != 'year'){
+			a = [item.taskNo+'d', item.taskName, item.taskPriority, new Date(item.startDate), new Date(item.dueDate), null, per, null];
+		}else{
+			var dueDate = (parseInt(item.dueDate) + index);
+			a = [item.taskNo+'d', item.taskName, item.taskPriority, new Date(item.startDate,00,00), new Date(dueDate,00,00), null, per, null];
+		}
+	data.addRow(a);
+	listSize += 1;
+  });// for each 
+  
   var options = {
-    height: 400,
+    height: listSize*30,
     gantt: {
       trackHeight: 30
     }
@@ -90,49 +93,41 @@ function drawChart(t_list) {
 }
 
 
-/* WBS 데이터 불러오기 */	
-	function sendNo(){
+/* Gantt 데이터 불러오기 */	
+	function Gantt(date){
+	var ad = null;	
+		switch(date){
+			case 'year' : ad = "/planbe/gantt/year"; break;
+			case 'month' : ad = "/planbe/gantt/month"; break;
+			default : ad = "/planbe/gantt/getGantt";
+			}
 		$.ajax({
-		  		url: "/planbe/wbs/getWbs",
+		  		url: ad,
 		  		type: "post",
-		  		data: {"projectNo" : $("#projectNo").val()},
+		  		data: {"projectNo" : "${m_vo.projectNo}"},
 		  		datatype: "json",
 		  		success: function(result) {
-                    alert("success에 들어옴");	
-                    
-                    var p_name = result.projectName;
-                    var t_list = result.taskList; 	
-		  			
-                    drawSimpleNodeChart(p_name, t_list);
-                    drawChart(t_list);
-
-				}, // succes
-		  			
-              /*  origin  
-              function(result) {
-		  		    
-		  			var p_name2 = result.projectName;
-		  			alert(p_name2);
-		  			$("#p_name").append("<tr><td><button class='btn btn-large btn-primary'>" + p_name2 + "</button></td></tr>"); 
-		  			
-		  			var t_list = result.taskList; 
-						  
-		  			var totalSpace = 1000-(t_list.length*100); 
-				    var subSpace = (totalSpace/t_list.length)*0.5;
-				    
-				    $(t_list).each(function(index, item) {
-						  $("#t_name").append("<td><div style='margin-right:" + subSpace + "px; margin-left:" + subSpace + "px;'><button class='btn btn-large'>" + item.taskName + "</button><div></td>");
-						  
-					})
-				}, 
-				*/
-		  		
-		  		error: function() {
-					alert("선택해 주세요...");
-				}
+                    var GanttList = result;
+                    drawChart(GanttList,date);
+				}, // success
+		  		error: function() {	alert("통신 에------라!");	}
 		})
 	}
-
+	
+/* projectList 불러오기  */
+	function getProject(projectNo){
+		$.ajax({
+	  		url: "/planbe/project/getProject",
+	  		type: "post",
+	  		data: {"projectNo" : projectNo},
+	  		datatype: "json",
+	  		success: function(result) {
+	  			alert("성공~!");
+	  			vo = result;
+			}, // succes
+	  		error: function() {	alert("통신 에------라!");	}
+		})		
+}
 </script>
 
 <body>
@@ -175,18 +170,6 @@ function drawChart(t_list) {
 			
 	
 <!-- ========================================================================================================================== -->
-
-	
-								
-								
-													  
-												
-												
-												
-												
-												
-						
-										  
 					
 								
 			
@@ -195,141 +178,42 @@ function drawChart(t_list) {
 			<!-- Project List 페이지에서 하나의 프로젝트를 클릭하면, 해당 프로젝트의 projectNo을 넘기는 구조 -->
             
 <!-- gantt -->            
-            <div id="chart_div"></div>
-            
-            
-<!-- projectNo을 넘기기 위한 임시 form -->
-			   <form>
-			     <input type="text" name="projectNo" id="projectNo">
-			     <input type="button" value="데이터 불러오기" onclick="sendNo()"> 
-			   </form>
+<%-- 	<c:forEach items="${taskList}" var="taskList">
+		${taskList.projectNo} --%>
+           
+<%-- 	</c:forEach> --%>
 			
- <div id="wordtree_explicit" style="width: 900px; height: 500px;"></div>			
 		
-							    
-							    
 							        
 			  <!-- 노드 정보 박스 -->				    
 			  <div class="row-fluid">
 				
 				<div class="box span12">
 						<div class="box-header">
-							<h2><i class="halflings-icon white th"></i><span class="break"></span>Info</h2>
+							<h2><i class="halflings-icon white th"></i><span class="break"></span>Gantt Chart</h2>
 						</div>
 						
 						<div class="box-content">
-							<ul class="nav tab-menu nav-tabs" id="myTab">
-								<li class="active"><a href="#info">Info</a></li>
-								<li><a href="#custom">Custom</a></li>
-								<li><a href="#messages">Messages</a></li>
-							</ul>
-							 
-								<div id="myTabContent" class="tab-content">
-										<div class="tab-pane active" id="info">
-											<p>
-			
-												Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
-											</p>
-			
-										</div>
-										
-										<div class="tab-pane" id="custom">
-											<p>
-												Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
-											</p>
-										</div>
-										
-										<div class="tab-pane" id="messages">
-											<p>
-												Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   
-											</p>
-											<p>
-												Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
-											</p>
-										</div>
-								</div>
+						<div id="chart_div"></div> <!-- Gantt  -->
+						<div id="oneGroup">
+							<p class="btn-group">
+								  <input type = "button" class="btn" onclick="Gantt('year')" value = "year">
+								  <input type = "button" class="btn" onclick="Gantt('month')" value = "month">
+								  <input type = "button" class="btn" onclick="Gantt('week')" value = "week">
+							</p>							
+						</div>
+							
+							<div class="box-content buttons">
+							<p>
+								<button class="btn btn-large btn-primary" onclick= "location.href ='/planbe/task/taskForm'">수정</button>
+								<button class="btn btn-large btn-warning" onclick= "location.href ='/planbe/wbs/wbsForm'">「 WBS 」로 보기</button>
+							</p>
+							</div>
 						</div>
 				</div><!--/span-->
-			
 			</div><!--/row-->			
-							
-				<div class="box span6">
-					<div class="box-header">
-						<h2><i class="halflings-icon white list"></i><span class="break"></span>Buttons</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
-						</div>
-					</div>
-					<div class="box-content buttons">
-						<p>
-							<button class="btn btn-large">Large button</button>
-							<button class="btn btn-large btn-primary">Large button</button>
-							<button class="btn btn-large btn-danger">Large button</button>
-							<button class="btn btn-large btn-warning">Large button</button>
-						</p>
-						<p>
-							<button class="btn btn-large btn-success">Large button</button>
-							<button class="btn btn-large btn-info">Large button</button>
-							<button class="btn btn-large btn-inverse">Large button</button>
-						</p>
-						<p>
-							
-						</p>
-						<div class="btn-group">
-							<button class="btn btn-large">Large Dropdown</button>
-							<button class="btn btn-large dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-							<ul class="dropdown-menu">
-								<li><a href="#"><i class="halflings-icon white star"></i> Action</a></li>
-								<li><a href="#"><i class="halflings-icon white tag"></i> Another action</a></li>
-								<li><a href="#"><i class="halflings-icon white download-alt"></i> Something else here</a></li>
-								<li class="divider"></li>
-								<li><a href="#"><i class="halflings-icon white tint"></i> Separated link</a></li>
-							</ul>
-						</div>
-						
-						<hr>
-						
-						<p class="btn-group">
-							  <button class="btn">Left</button>
-							  <button class="btn">Middle</button>
-							  <button class="btn">Right</button>
-						</p>
-						<p>
-							<button class="btn btn-small"><i class="halflings-icon white white star"></i> Icon button</button>
-							<button class="btn btn-small btn-primary">Small button</button>
-							<button class="btn btn-small btn-danger">Small button</button>
-							<button class="btn btn-small btn-warning">Small button</button>
-							<button class="btn btn-small btn-success">Small button</button>
-							
-						</p>
-						<p>
-							<button class="btn btn-small btn-info">Small button</button>
-							<button class="btn btn-small btn-inverse">Small button</button>
-							<button class="btn btn-large btn-primary btn-round">Round button</button>
-							<button class="btn btn-large btn-round"><i class="halflings-icon white white ok"></i></button>
-							<button class="btn btn-primary"><i class="halflings-icon white white edit"></i></button>
-						</p>
-						<p>
-							<button class="btn btn-mini">Mini button</button>
-							<button class="btn btn-mini btn-primary">Mini button</button>
-							<button class="btn btn-mini btn-danger">Mini button</button>
-							<button class="btn btn-mini btn-warning">Mini button</button>
-							<button class="btn btn-mini btn-info">Mini button</button>
-							<button class="btn btn-mini btn-success">Mini button</button>
-							<button class="btn btn-mini btn-inverse">Mini button</button>
-						</p>
-						
-					</div>
-				</div><!--/span-->
-				
-			</div><!--/row-->
+			<div>
 			
-			
-			
-			
-
 	</div><!--/.fluid-container-->
 	
 			<!-- end: Content -->
@@ -351,14 +235,12 @@ function drawChart(t_list) {
 	</div>
 	
 	<div class="clearfix"></div>
-	
-	<footer>
 
+	<!-------------------------------------------------------------------------------------------------------------- 아래  -->	
+	<footer>
 	    <p>
 			<span style="text-align:left;float:left">&copy; 2017 <a href="/planbe/ourTeam" alt="Bootstrap_Metro_Dashboard">SCIT MASTER 33rd CLASS B TEAM 2 </a></span>
 		</p>
-			
-
 	</footer>
 	
 	<!-- start: JavaScript-->

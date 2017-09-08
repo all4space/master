@@ -10,5 +10,5 @@ public interface ProjectService { //생성
 	public int projectAdd(ProjectVO projectVo);
 	public boolean projectModify(UsersVO vo);
 	public boolean projectDelete(UsersVO vo);
-	public ArrayList<ProjectVO> getProjectList(UsersVO vo);
+	public ProjectVO getProject(int projectNo);// projectNo와 일치하는 project 정보 가져오기
 }

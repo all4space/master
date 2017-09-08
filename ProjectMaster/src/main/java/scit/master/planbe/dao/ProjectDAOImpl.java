@@ -36,9 +36,9 @@ public class ProjectDAOImpl implements ProjectDAO{
 	}
 
 	@Override
-	public ArrayList<ProjectVO> getProjectList(UsersVO vo) {
+	public ProjectVO getProject(int projectNo) {
 		ProjectMapper mapper = sqlSession.getMapper(ProjectMapper.class);
-		return mapper.getProjectList(vo);
+		return mapper.getProject(projectNo);
 	}
 
 	@Override

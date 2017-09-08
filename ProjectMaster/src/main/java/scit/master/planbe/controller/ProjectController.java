@@ -44,6 +44,14 @@ public class ProjectController {
 		return mov;
 	}
 	
+	//ProjectNo에 맞는 project 정보 가져오기.
+	@RequestMapping(value = "getProject", method = RequestMethod.POST)
+	@ResponseBody
+	public ProjectVO getProject(int projectNo) {
+		return service.getProject(projectNo);
+	}
+	
+	
 	// group Member List 불러오기 ajax;
 	@RequestMapping(value = "groupManagerList", method = RequestMethod.POST)
 	@ResponseBody
@@ -137,5 +145,6 @@ public class ProjectController {
         		
 		return "taskFrom";
 	}
+	
 		
 }

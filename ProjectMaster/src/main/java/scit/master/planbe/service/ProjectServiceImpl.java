@@ -40,9 +40,8 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Override
-	public ArrayList<ProjectVO> getProjectList(UsersVO vo) {
-		dao.getProjectList(vo);
-		return null;
+	public ProjectVO getProject(int projectNo) {
+		return dao.getProject(projectNo);
 	}
 
 	public ArrayList<UsersVO> groupNameList() {

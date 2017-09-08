@@ -11,7 +11,7 @@ public interface ProjectDAO {
 	public int projectAdd(ProjectVO projectVo);
 	public int projectModify(UsersVO vo);
 	public int projectDelete(UsersVO vo);
-	public ArrayList<ProjectVO> getProjectList(UsersVO vo);
+	public ProjectVO getProject(int projectNo);
 	
 	
 	public MemberVO getMemberNo(UsersVO vo);

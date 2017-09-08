@@ -5,9 +5,26 @@
 
 <mapper namespace="scit.master.planbe.dao.GanttMapper">
 
+<select id = "getGantt" parameterType="MemberVO" resultType="TaskVO">
+	SELECT projectNo, memberNo, taskNo, taskName, taskContent, taskPriority,to_char(startdate,'yyyy,mm,dd')as startDate,
+	to_char(duedate,'yyyy,mm,dd')as dueDate, totalTime, doneTime FROM TASK WHERE projectNo = #{projectNo} 
+</select> 
+
+<!-- <select id = "getGantt" parameterType="MemberVO" resultType="TaskVO">
+	SELECT projectNo, memberNo, taskNo, taskName, taskContent, taskPriority,to_char(startdate,'yyyy-mm-dd')as startDate,
+	to_char(duedate,'yyyy-mm-dd')as dueDate, totalTime, doneTime FROM TASK WHERE projectNo = #{projectNo} and memberno = 1 
+</select> -->
 
 
+<select id = "year" parameterType="MemberVO" resultType="TaskVO">
+	SELECT projectNo, memberNo, taskNo, taskName, taskContent, taskPriority,to_char(startdate,'yyyy')as startDate,
+	to_char(duedate,'yyyy')as dueDate, totalTime, doneTime FROM TASK WHERE projectNo = #{projectNo}
+</select>
 
+<select id = "month" parameterType="MemberVO" resultType="TaskVO">
+	SELECT projectNo, memberNo, taskNo, taskName, taskContent, taskPriority,to_char(startdate,'yyyy,mm')as startDate,
+	to_char(duedate,'yyyy,mm')as dueDate, totalTime, doneTime FROM TASK WHERE projectNo = #{projectNo}
+</select>
 </mapper>
 
 

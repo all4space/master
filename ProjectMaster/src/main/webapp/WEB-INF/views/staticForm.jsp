@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 
 <!DOCTYPE html>
 <html>
@@ -25,27 +25,61 @@
 	<link id="base-style-responsive" href="/planbe/resources/bootstrap/css/style-responsive.css" rel="stylesheet">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,cyrillic-ext,latin-ext' rel='stylesheet' type='text/css'>
 	<!-- end: CSS -->
-	
-
-	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
-	  	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<link id="ie-style" href="/planbe/resources/bootstrap/css/ie.css" rel="stylesheet">
-	<![endif]-->
-	
-	<!--[if IE 9]>
-		<link id="ie9style" href="/planbe/resources/bootstrap/css/ie9.css" rel="stylesheet">
-	<![endif]-->
 		
-	<!-- start: Favicon -->
-	<link rel="shortcut icon" href="/planbe/resources/bootstrap/img/favicon.ico">
-	<!-- end: Favicon -->
-	
-		
-		
-		
+	<script type = "text/javascript" src="/planbe/resources/js/jquery-3.2.1.min.js"></script>
+	<script type = "text/javascript" src="/planbe/resources/js/arrayList.js"></script>
 </head>
-
+<script>
+$(function(){
+	projectIng();
+})
+ 	function projectIng(){
+	
+		var pNo_list = ${projectNo_list};
+		alert(pNo_list);
+		var result = [];
+		$(pNo_list).each(function(index,item){
+			result.push(item);
+			alert(result);
+		})
+			$.ajax({
+		  		url: "/planbe/static/getProjectList",
+		  		type : "post",
+		  		data : { "pnoList" : result },
+		  		datatype: "json",
+		  		success: function(result) {
+		  			alert("성공~!");
+		  			var projectList = result.p_vo;
+		  			var t_vo = result.efficiencyTime;
+		  			setEfficiency(projectList, t_vo);
+				}, // success
+		  		error: function() {	alert("통신 에------라!");	}
+			})
+	} 
+	
+	function setEfficiency(projectList){
+		
+		var color = ['circleStatsItemBox yellow','circleStatsItemBox green','circleStatsItemBox red','circleStatsItemBox pink','circleStatsItemBox blue','circleStatsItemBox green'];
+		$(projectList).each(function(index,item){
+		var data  = '<div class = '+color[index]+'>';
+			data	 += '<div class = "header"></div>';
+			data	 += '<span class="percent">percent</span>';
+			data	 += '<div class ="circleStat">';
+			data	 += '<input type = "text" value = "100" class = "whiteCircle" />';
+			data	 += '</div>';
+			data	 += '<div class = "footer">';
+			data	 +=	'<span class = "count">';
+			data	 += '<span class = "number"></span>';
+			data	 += '<span class = "unit"> D </span>';
+			data	 += '</span>';
+			data	 += '<span class = "sep"> - </span>';
+			data	 += '<span class = "value">';
+			data	 += '<span class = "number> projectDuedate - sysDate <span>';
+			data	 += '<span class = "unit"> day </span>';
+			data	 += '</span></div></div>';
+		})	
+	}
+</script>
 <body>
 		
 <!-- Head Menu -->
@@ -117,23 +151,16 @@
 					<div class="box-header">
 						<h2><i class="halflings-icon white list-alt"></i><span class="break"></span>Stack Example</h2>
 						<div class="box-icon">
-							<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
 						</div>
 					</div>
 					<div class="box-content">
-						 <div id="stackchart" class="center" style="height:300px;"></div>
-
-						<p class="stackControls center">
-							<input class="btn" type="button" value="With stacking">
-							<input class="btn" type="button" value="Without stacking">
-						</p>
-
+						  <div id="barchart_material" style="width: 900px; height: 500px;">
+						  	<div class = "span2" onTablet="span4" onDesktop="span2"></div>
+						  </div>
 						<p class="graphControls center">
-							<input class="btn-primary" type="button" value="Bars">
-							<input class="btn-primary" type="button" value="Lines">
-							<input class="btn-primary" type="button" value="Lines with steps">
+							<input class="btn-primary" type="button" value="월간">
+							<input class="btn-primary" type="button" value="주간">
+							<input class="btn-primary" type="button" value="일간">
 						</p>
 					</div>
 				</div>
@@ -253,9 +280,11 @@
 	</footer>
 	
 	<!-- start: JavaScript-->
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 		<script src="/planbe/resources/bootstrap/js/jquery-1.9.1.min.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery-migrate-1.0.0.min.js"></script>
+		
+		<script src="/planbe/resources/bootstrap/js/jquery-migrate-1.0.0.min.js"></script>
 	
 		<script src="/planbe/resources/bootstrap/js/jquery-ui-1.10.0.custom.min.js"></script>
 	
@@ -272,10 +301,14 @@
 		<script src='/planbe/resources/bootstrap/js/jquery.dataTables.min.js'></script>
 
 		<script src="/planbe/resources/bootstrap/js/excanvas.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.pie.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.stack.js"></script>
-	<script src="/planbe/resources/bootstrap/js/jquery.flot.resize.min.js"></script>
+		
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.js"></script>
+		
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.pie.js"></script>
+		
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.stack.js"></script>
+		
+		<script src="/planbe/resources/bootstrap/js/jquery.flot.resize.min.js"></script>
 	
 		<script src="/planbe/resources/bootstrap/js/jquery.chosen.min.js"></script>
 	
