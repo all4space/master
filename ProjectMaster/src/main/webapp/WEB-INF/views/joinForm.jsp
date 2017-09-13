@@ -122,7 +122,14 @@
    
    
 </script>
+<style>
+#checkId
+{
+	float: right;
+	margin-right: 6%; 
+}
 
+</style>	
 <body>
 		<div class="container-fluid-full">
 		<div class="row-fluid">
@@ -142,7 +149,7 @@
 								<input class="input-large span10" name="userId" id="userId" type="text" placeholder="type userId"/>
 							</div>
 							<!-- 버튼 위치 조정 필요 -->
-							    <span style="float: right">
+							    <span id = "checkId">
 								<button type="button" class="btn btn-idCheck" onclick="idCheck()">중복 체크</button>
 							    </span>
 							    
@@ -169,17 +176,16 @@
                             
                             <div title="Authority"> 
                                 <!-- 라디오 버튼으로 하면 체크가 안됨 -->
-								<!--  <input type="radio" name="authority" value="cto"/> CTO
-								 <input type="radio" name="authority" value="manager"/> Manager
-								 <input type="radio" name="authority" value="member"/> Member -->
-								 
-								 <center>
+								 <label><input type="radio" name="authority" value="cto" checked="checked"/> CTO</label>
+								 <label><input type="radio" name="authority" value="manager"/> Manager</label>
+								 <label><input type="radio" name="authority" value="member"/> Member</label>
+								 </div>
+								 <%-- <center>
 								  Authority
 								 <input type="checkbox" name="authority" id="cto" value="cto"/> CTO
 								 <input type="checkbox" name="authority" value="manager"/> Manager
 								 <input type="checkbox" name="authority" value="member"/> Member
-								 </center>
-                            </div>
+								 </center> --%>
 								 
                             
 							<div class="button-join">	

@@ -57,7 +57,7 @@ public class TaskServiceImpl implements TaskService{
 		return null;
 	}
 
-	//업무 생성하기
+	//�뾽臾� �깮�꽦�븯湲�
 	@Override
 	public void Insert(TaskVO task) {
 		dao.Insert(task);				
@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService{
 		return null;
 	}
 
-	//업무 리스트 출력하기
+	//�뾽臾� 由ъ뒪�듃 異쒕젰�븯湲�
 	@Override
 	public ArrayList<TaskVO> getList(String searchtype, String searchword, int startRecord, int countPerPage) {
 		return dao.getList(searchtype,searchword,startRecord,countPerPage);
@@ -87,7 +87,7 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	
-	// 업무 수정하기
+	// �뾽臾� �닔�젙�븯湲�
 	@Override
 	public void updateTask(TaskVO taskVo) {
 		dao.updateTask(taskVo);
@@ -106,13 +106,13 @@ public class TaskServiceImpl implements TaskService{
 		return null;
 	}
 	
-	// 총 페이지 레코드 가져오기
+	// 珥� �럹�씠吏� �젅肄붾뱶 媛��졇�삤湲�
 	@Override
 	public int getTotalCount(String searchtype, String searchword) {
 		return dao.getTotalCount(searchtype,searchword);
 	}
 
-	// 엑셀 다운로드
+	// �뿊�� �떎�슫濡쒕뱶
 	
 	@Override
 	@Transactional
